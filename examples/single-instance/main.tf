@@ -1,11 +1,17 @@
 locals {
-  name_prefix = "${var.app_name}-${var.environment}-${var.instance_name}"
+  name_prefix_base = "${var.app_name}-${var.environment}-${var.instance_name}"
+  name_prefix_hash = substr(sha1(local.name_prefix_base), 0, 8)
+  name_prefix_stem = replace(substr(local.name_prefix_base, 0, 51), "/-+$/", "")
+  name_prefix      = length(local.name_prefix_base) <= 60 ? local.name_prefix_base : "${local.name_prefix_stem}-${local.name_prefix_hash}"
   labels = merge(var.labels, {
     app         = var.app_name
     environment = var.environment
     instance    = var.instance_name
   })
-  media_bucket_name = coalesce(var.media_bucket_name, "${var.project_id}-${local.name_prefix}-media")
+  media_bucket_base_name    = "${var.project_id}-${local.name_prefix}-media"
+  media_bucket_hash         = sha1(local.media_bucket_base_name)
+  default_media_bucket_name = "media-${local.media_bucket_hash}"
+  media_bucket_name         = coalesce(var.media_bucket_name, local.default_media_bucket_name)
 }
 
 module "networking" {

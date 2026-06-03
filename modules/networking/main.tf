@@ -1,7 +1,10 @@
 locals {
-  network_name              = coalesce(var.network_name, "${var.name_prefix}-network")
-  serverless_connector_name = coalesce(var.serverless_connector_name, trimsuffix(substr("${var.name_prefix}-connector", 0, 24), "-"))
-  connector_network_name    = var.create_network ? google_compute_network.this[0].name : var.network_name
+  name_hash                         = substr(sha1(var.name_prefix), 0, 6)
+  default_network_name              = length("${var.name_prefix}-network") <= 63 ? "${var.name_prefix}-network" : "${trimsuffix(substr(var.name_prefix, 0, 48), "-")}-${local.name_hash}-network"
+  default_serverless_connector_name = "${substr(replace(var.name_prefix, "-", ""), 0, 6)}-${local.name_hash}-c"
+  network_name                      = coalesce(var.network_name, local.default_network_name)
+  serverless_connector_name         = coalesce(var.serverless_connector_name, local.default_serverless_connector_name)
+  connector_network_name            = var.create_network ? google_compute_network.this[0].name : var.network_name
 }
 
 resource "google_compute_network" "this" {
@@ -12,6 +15,13 @@ resource "google_compute_network" "this" {
   auto_create_subnetworks         = var.auto_create_subnetworks
   routing_mode                    = var.routing_mode
   delete_default_routes_on_create = var.delete_default_routes_on_create
+
+  lifecycle {
+    precondition {
+      condition     = can(regex("^[a-z]([a-z0-9-]*[a-z0-9])?$", local.network_name)) && length(local.network_name) <= 63
+      error_message = "A created VPC network name must be a valid lowercase name with 63 characters or fewer. Existing network self links are only supported when create_network = false."
+    }
+  }
 }
 
 resource "google_vpc_access_connector" "this" {
@@ -33,8 +43,8 @@ resource "google_vpc_access_connector" "this" {
     }
 
     precondition {
-      condition     = var.connector_max_instances >= var.connector_min_instances
-      error_message = "connector_max_instances must be greater than or equal to connector_min_instances."
+      condition     = var.connector_max_instances > var.connector_min_instances
+      error_message = "connector_max_instances must be greater than connector_min_instances."
     }
   }
 }
