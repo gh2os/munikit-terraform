@@ -1,0 +1,28 @@
+# Runtime allowlist for .devcontainer/init-codex-firewall.sh.
+# Keep this project-specific and add only domains needed for Codex, Git, package
+# downloads, Terraform provider installs, CDK context lookups, AWS API calls, and
+# isolated Docker builds. CDK and AWS tooling often need region-specific hosts
+# such as cloudformation.us-east-1.amazonaws.com or ssm.us-east-1.amazonaws.com;
+# add the exact hosts required by each project before enabling the firewall.
+api.openai.com
+auth.openai.com
+chatgpt.com
+github.com
+api.github.com
+codeload.github.com
+raw.githubusercontent.com
+objects.githubusercontent.com
+bitbucket.org
+api.bitbucket.org
+registry.terraform.io
+releases.hashicorp.com
+apt.releases.hashicorp.com
+deb.nodesource.com
+registry.npmjs.org
+pypi.org
+files.pythonhosted.org
+sts.amazonaws.com
+s3.amazonaws.com
+auth.docker.io
+registry-1.docker.io
+production.cloudflare.docker.com

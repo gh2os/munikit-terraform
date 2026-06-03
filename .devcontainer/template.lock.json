@@ -1,0 +1,10 @@
+{
+  "templateRepoPath": "/Users/g/work/personal/devcontainer",
+  "template": "terraform",
+  "templateVersion": "v0.2.0-7-g77cb404",
+  "templateCommit": "77cb404f5e9c0c2fbb1d3df0ab5ab7036e8221d6",
+  "appliedAt": "2026-06-03T21:49:23Z",
+  "client": "munikit",
+  "repo": "munikit-terraform",
+  "volumePrefix": "munikit-munikit-terraform"
+}

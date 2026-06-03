@@ -1,0 +1,11 @@
+Host github.com github-* github.com-*
+  HostName github.com
+  User git
+  IdentityAgent /ssh-agent
+  StrictHostKeyChecking accept-new
+
+Host bitbucket.org bitbucket-* bitbucket.org-*
+  HostName bitbucket.org
+  User git
+  IdentityAgent /ssh-agent
+  StrictHostKeyChecking accept-new

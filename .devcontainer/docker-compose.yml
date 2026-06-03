@@ -1,0 +1,27 @@
+services:
+  terraform:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    # Required for isolated Docker-in-Docker builds and Codex's nested Linux sandbox.
+    # The host Docker socket is intentionally not mounted.
+    privileged: true
+    init: true
+
+    volumes:
+      - ..:/workspace:cached
+      - ${SSH_AUTH_SOCK:-/run/host-services/ssh-auth.sock}:/ssh-agent
+      - ./direnv/config.toml:/home/vscode/.config/direnv/config.toml:ro
+      - ./ssh/config:/home/vscode/.ssh/config:ro
+
+    environment:
+      TERM: xterm-256color
+      COLORTERM: truecolor
+      SSH_AUTH_SOCK: /ssh-agent
+      CODEX_HOME: /home/vscode/.codex
+      SHELL_HISTORY_HOME: /home/vscode/.shell-history
+      DOCKER_BUILDKIT: "1"
+      CODEX_ENABLE_FIREWALL: "0"
+
+    command: sleep infinity

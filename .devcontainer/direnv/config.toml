@@ -1,0 +1,2 @@
+# Intentionally no global whitelist.
+# Review each project's .envrc before running `direnv allow`.

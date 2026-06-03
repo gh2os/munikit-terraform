@@ -1,0 +1,55 @@
+{
+    "name": "munikit-terraform Terraform",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "terraform",
+    "features": {
+        "ghcr.io/devcontainers/features/aws-cli:1": {},
+        "ghcr.io/devcontainers/features/python:1": {},
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "version": "latest",
+            "moby": true
+        }
+        //"ghcr.io/gvatsal60/dev-container-features/pre-commit:1": {}
+        // "ghcr.io/devcontainers-contrib/features/trivy:1": {},
+        // "ghcr.io/devcontainers-extra/features/terraform-docs:1": {},
+        // "ghcr.io/devcontainers-extra/features/isort:2": {}
+    },
+    "remoteEnv": {
+        "TERM": "xterm-256color",
+        "COLORTERM": "truecolor",
+        "SSH_AUTH_SOCK": "/ssh-agent",
+        "CODEX_HOME": "/home/vscode/.codex",
+        "SHELL_HISTORY_HOME": "/home/vscode/.shell-history"
+    },
+    "mounts": [
+        "source=munikit-munikit-terraform-codex-home-${devcontainerId},target=/home/vscode/.codex,type=volume",
+        "source=munikit-munikit-terraform-shell-history-${devcontainerId},target=/home/vscode/.shell-history,type=volume"
+    ],
+    "customizations": {
+        "vscode": {
+            // Set *default* container specific settings.json values on container create.
+            "settings": {
+                "editor.formatOnPaste": false, // required
+                "editor.formatOnType": false, // required
+                "editor.formatOnSave": true, // optional
+                "editor.formatOnSaveMode": "file", // required to format on save
+                "files.autoSave": "off" // optional
+            },
+            // Add the IDs of extensions you want installed when the container is created.
+            "extensions": [
+                "ms-azuretools.vscode-docker",
+                "4ops.terraform",
+                "hashicorp.terraform",
+                "ms-python.python",
+                "redhat.vscode-yaml",
+                "AmazonWebServices.aws-toolkit-vscode",
+                "eamodio.gitlens",
+                "openai.chatgpt"
+            ]
+        }
+    },
+    "remoteUser": "vscode",
+    "postStartCommand": "bash /usr/local/share/codex-devcontainer/ensure-codex-sandbox-mode.sh && bash /usr/local/share/codex-devcontainer/ensure-codex-agents-md.sh && bash /usr/local/share/codex-devcontainer/ensure-shell-history.sh && bash /usr/local/share/codex-devcontainer/install-git-guardrails.sh && sudo env CODEX_ENABLE_FIREWALL=\"${CODEX_ENABLE_FIREWALL:-0}\" CODEX_ALLOWED_DOMAINS_FILE=\"/usr/local/share/codex-devcontainer/codex-allowed-domains.txt\" bash /usr/local/share/codex-devcontainer/init-codex-firewall.sh",
+    "waitFor": "postStartCommand",
+    "workspaceFolder": "/workspace"
+}
