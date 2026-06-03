@@ -1,8 +1,11 @@
 locals {
   name_prefix                     = "${var.app_name}-${var.environment}-${var.instance_name}"
-  service_name                    = coalesce(var.service_name, trimsuffix(substr(local.name_prefix, 0, 49), "-"))
+  name_hash                       = substr(sha1(local.name_prefix), 0, 6)
+  default_service_name            = length(local.name_prefix) <= 49 ? local.name_prefix : "${trimsuffix(substr(local.name_prefix, 0, 42), "-")}-${local.name_hash}"
+  service_name                    = coalesce(var.service_name, local.default_service_name)
   payload_secret_id               = coalesce(var.payload_secret_id, "${local.name_prefix}-payload-secret")
-  artifact_registry_repository_id = coalesce(var.artifact_registry_repository_id, trimsuffix(substr("${local.name_prefix}-containers", 0, 63), "-"))
+  default_repository_id           = length("${local.name_prefix}-containers") <= 63 ? "${local.name_prefix}-containers" : "${trimsuffix(substr(local.name_prefix, 0, 45), "-")}-${local.name_hash}-containers"
+  artifact_registry_repository_id = coalesce(var.artifact_registry_repository_id, local.default_repository_id)
 
   plain_env_vars = merge(
     {

@@ -18,8 +18,8 @@ variable "app_name" {
   type        = string
 
   validation {
-    condition     = can(regex("^[a-z]([a-z0-9-]*[a-z0-9])?$", var.app_name))
-    error_message = "app_name must contain only lowercase letters, numbers, and hyphens, start with a letter, and end with a letter or number."
+    condition     = can(regex("^[a-z]([a-z0-9-]*[a-z0-9])?$", var.app_name)) && length(var.app_name) <= 40
+    error_message = "app_name must be 40 characters or fewer, contain only lowercase letters, numbers, and hyphens, start with a letter, and end with a letter or number."
   }
 }
 
@@ -28,8 +28,8 @@ variable "environment" {
   type        = string
 
   validation {
-    condition     = can(regex("^[a-z]([a-z0-9-]*[a-z0-9])?$", var.environment))
-    error_message = "environment must contain only lowercase letters, numbers, and hyphens, start with a letter, and end with a letter or number."
+    condition     = can(regex("^[a-z]([a-z0-9-]*[a-z0-9])?$", var.environment)) && length(var.environment) <= 30
+    error_message = "environment must be 30 characters or fewer, contain only lowercase letters, numbers, and hyphens, start with a letter, and end with a letter or number."
   }
 }
 
@@ -57,8 +57,8 @@ variable "instances" {
   validation {
     condition = alltrue([
       for name, instance in var.instances :
-      can(regex("^[a-z]([a-z0-9-]*[a-z0-9])?$", name))
+      can(regex("^[a-z]([a-z0-9-]*[a-z0-9])?$", name)) && length(name) <= 40
     ])
-    error_message = "Instance keys must contain only lowercase letters, numbers, and hyphens, start with a letter, and end with a letter or number."
+    error_message = "Instance keys must be 40 characters or fewer, contain only lowercase letters, numbers, and hyphens, start with a letter, and end with a letter or number."
   }
 }

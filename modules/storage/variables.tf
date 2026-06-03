@@ -23,8 +23,18 @@ variable "bucket_name" {
   type        = string
 
   validation {
-    condition     = can(regex("^[a-z0-9][a-z0-9._-]{1,221}[a-z0-9]$", var.bucket_name))
-    error_message = "bucket_name must be a valid Cloud Storage bucket name."
+    condition = can(regex("^[a-z0-9][a-z0-9._-]{1,220}[a-z0-9]$", var.bucket_name)) && !startswith(var.bucket_name, "goog") && !can(regex("g[o0]{2}g[l1]e", var.bucket_name)) && !can(regex("^([0-9]{1,3}\\.){3}[0-9]{1,3}$", var.bucket_name)) && (
+      length(split(".", var.bucket_name)) > 1 ? (
+        length(var.bucket_name) <= 222 &&
+        alltrue([
+          for label in split(".", var.bucket_name) :
+          length(label) <= 63 && can(regex("^[a-z0-9]([a-z0-9-]*[a-z0-9])?$", label))
+        ])
+        ) : (
+        length(var.bucket_name) <= 63
+      )
+    )
+    error_message = "bucket_name must be a valid Cloud Storage bucket name. Dotless names must be 63 characters or fewer; dotted names may be up to 222 characters with each component 63 characters or fewer, and names must not look like an IPv4 address, start with goog, or contain google/g00gle-like reserved names."
   }
 }
 

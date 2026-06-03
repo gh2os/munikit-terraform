@@ -1,5 +1,7 @@
 locals {
-  runtime_service_account_id = coalesce(var.runtime_service_account_id, trimsuffix(substr("${var.name_prefix}-run", 0, 30), "-"))
+  name_hash                          = substr(sha1(var.name_prefix), 0, 6)
+  default_runtime_service_account_id = length("${var.name_prefix}-run") >= 6 && length("${var.name_prefix}-run") <= 30 ? "${var.name_prefix}-run" : "${trimsuffix(substr(var.name_prefix, 0, 19), "-")}-${local.name_hash}-run"
+  runtime_service_account_id         = coalesce(var.runtime_service_account_id, local.default_runtime_service_account_id)
 }
 
 resource "google_service_account" "runtime" {

@@ -33,16 +33,19 @@ IAM is intentionally narrow:
 - A user-managed runtime service account is created per app instance.
 - The runtime service account receives `roles/cloudsql.client`.
 - Secret access is granted only on the specific secrets needed by that instance.
-- Media bucket access is bucket-scoped.
+- Media writes use a dedicated HMAC service account with bucket-scoped object access.
+- Direct media bucket access for the runtime service account is opt-in with `grant_runtime_bucket_access`.
 - No module grants broad project Editor or Owner roles.
+
+Generated names include `app_name`, `environment`, and `instance_name` where provider limits allow. When a provider limit requires shortening, roots and modules add a deterministic hash suffix rather than plain truncation to avoid long-name collisions. Serverless VPC Access connector names are especially short, so the networking module uses a compact hashed default. Default media bucket names use a deterministic `media-<sha1>` value because Cloud Storage bucket names are globally shared and reject some otherwise valid app or project names, including `goog` and `google`-like strings.
 
 ## Repo Structure
 
 - `modules/munikit-app`: Cloud Run service, Payload secret, secret-backed runtime env vars, Cloud SQL mount, public invoker option, and optional Artifact Registry repository.
 - `modules/networking`: optional VPC network and optional Serverless VPC Access connector. Creates no resources by default.
 - `modules/database`: Cloud SQL PostgreSQL instance, app database, app database user, generated database password, and `DATABASE_URL` Secret Manager secret.
-- `modules/storage`: Cloud Storage media bucket, optional public object read, HMAC service account/key, and S3 credential Secret Manager secrets.
-- `modules/iam`: runtime service account and least-privilege IAM grants for Cloud SQL, Secret Manager, and media storage.
+- `modules/storage`: Cloud Storage media bucket, optional public object read, HMAC service account/key with bucket-scoped object access, and S3 credential Secret Manager secrets.
+- `modules/iam`: runtime service account and least-privilege IAM grants for Cloud SQL, Secret Manager, and optional direct media bucket access.
 - `environments/dev`: runnable root for a low-cost development deployment.
 - `environments/staging`: runnable root for staging.
 - `environments/prod`: runnable root for production with safer defaults.
@@ -257,7 +260,7 @@ Storage variables:
 - `create_hmac_key`
 - `s3_endpoint`
 - `s3_region`
-- `grant_runtime_bucket_access`
+- `grant_runtime_bucket_access`: opt-in direct media bucket access for the Cloud Run runtime service account. Leave `false` when using the default dedicated HMAC/S3 media credentials.
 
 Networking variables:
 

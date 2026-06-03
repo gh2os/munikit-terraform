@@ -23,8 +23,8 @@ variable "app_name" {
   type        = string
 
   validation {
-    condition     = can(regex("^[a-z]([a-z0-9-]*[a-z0-9])?$", var.app_name))
-    error_message = "app_name must contain only lowercase letters, numbers, and hyphens, start with a letter, and end with a letter or number."
+    condition     = can(regex("^[a-z]([a-z0-9-]*[a-z0-9])?$", var.app_name)) && length(var.app_name) <= 40
+    error_message = "app_name must be 40 characters or fewer, contain only lowercase letters, numbers, and hyphens, start with a letter, and end with a letter or number."
   }
 }
 
@@ -34,8 +34,8 @@ variable "environment" {
   default     = "dev"
 
   validation {
-    condition     = can(regex("^[a-z]([a-z0-9-]*[a-z0-9])?$", var.environment))
-    error_message = "environment must contain only lowercase letters, numbers, and hyphens, start with a letter, and end with a letter or number."
+    condition     = can(regex("^[a-z]([a-z0-9-]*[a-z0-9])?$", var.environment)) && length(var.environment) <= 30
+    error_message = "environment must be 30 characters or fewer, contain only lowercase letters, numbers, and hyphens, start with a letter, and end with a letter or number."
   }
 }
 
@@ -44,8 +44,8 @@ variable "instance_name" {
   type        = string
 
   validation {
-    condition     = can(regex("^[a-z]([a-z0-9-]*[a-z0-9])?$", var.instance_name))
-    error_message = "instance_name must contain only lowercase letters, numbers, and hyphens, start with a letter, and end with a letter or number."
+    condition     = can(regex("^[a-z]([a-z0-9-]*[a-z0-9])?$", var.instance_name)) && length(var.instance_name) <= 40
+    error_message = "instance_name must be 40 characters or fewer, contain only lowercase letters, numbers, and hyphens, start with a letter, and end with a letter or number."
   }
 }
 
@@ -76,7 +76,7 @@ variable "create_network" {
 }
 
 variable "network_name" {
-  description = "Existing VPC network name, or optional name for a created network."
+  description = "Existing VPC network name or self link, or optional name for a created network."
   type        = string
   default     = null
 }
@@ -208,9 +208,9 @@ variable "s3_region" {
 }
 
 variable "grant_runtime_bucket_access" {
-  description = "Whether the runtime service account should receive bucket-scoped object access."
+  description = "Whether the runtime service account should receive bucket-scoped object access in addition to the dedicated HMAC/S3 media credentials."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "cloud_run_deletion_protection" {

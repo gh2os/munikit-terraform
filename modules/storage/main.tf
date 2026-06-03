@@ -1,7 +1,9 @@
 locals {
-  hmac_service_account_id        = coalesce(var.hmac_service_account_id, trimsuffix(substr("${var.name_prefix}-hmac", 0, 30), "-"))
-  s3_access_key_id_secret_id     = coalesce(var.s3_access_key_id_secret_id, "${var.name_prefix}-s3-access-key-id")
-  s3_secret_access_key_secret_id = coalesce(var.s3_secret_access_key_secret_id, "${var.name_prefix}-s3-secret-access-key")
+  name_hash                       = substr(sha1(var.name_prefix), 0, 6)
+  default_hmac_service_account_id = length("${var.name_prefix}-hmac") <= 30 ? "${var.name_prefix}-hmac" : "${trimsuffix(substr(var.name_prefix, 0, 18), "-")}-${local.name_hash}-hmac"
+  hmac_service_account_id         = coalesce(var.hmac_service_account_id, local.default_hmac_service_account_id)
+  s3_access_key_id_secret_id      = coalesce(var.s3_access_key_id_secret_id, "${var.name_prefix}-s3-access-key-id")
+  s3_secret_access_key_secret_id  = coalesce(var.s3_secret_access_key_secret_id, "${var.name_prefix}-s3-secret-access-key")
 }
 
 resource "google_storage_bucket" "media" {

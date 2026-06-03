@@ -59,9 +59,9 @@ variable "grant_cloud_sql_client" {
 }
 
 variable "grant_media_bucket_object_access" {
-  description = "Whether to grant bucket-scoped object access to the runtime service account when media_bucket_name is set."
+  description = "Whether to grant bucket-scoped object access to the runtime service account when media_bucket_name is set. Keep false when the app uses dedicated HMAC/S3 credentials."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "media_bucket_role" {

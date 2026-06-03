@@ -27,9 +27,3 @@ output "database_url_secret_version_id" {
   description = "Secret Manager version ID for DATABASE_URL."
   value       = google_secret_manager_secret_version.database_url.id
 }
-
-output "database_url" {
-  description = "Generated DATABASE_URL. Prefer consuming database_url_secret_id."
-  value       = local.database_url
-  sensitive   = true
-}

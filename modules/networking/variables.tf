@@ -35,9 +35,14 @@ variable "create_network" {
 }
 
 variable "network_name" {
-  description = "Existing VPC network name, or optional name for a created network."
+  description = "Existing VPC network name or self link, or optional bare name for a created network."
   type        = string
   default     = null
+
+  validation {
+    condition     = var.network_name == null || length(var.network_name) > 0
+    error_message = "network_name must not be empty when provided."
+  }
 }
 
 variable "auto_create_subnetworks" {
@@ -70,9 +75,14 @@ variable "create_serverless_connector" {
 }
 
 variable "serverless_connector_name" {
-  description = "Optional Serverless VPC Access connector name."
+  description = "Optional Serverless VPC Access connector name. Must be shorter than 21 characters with hyphens counted as two characters."
   type        = string
   default     = null
+
+  validation {
+    condition     = var.serverless_connector_name == null || (can(regex("^[a-z]([a-z0-9-]*[a-z0-9])?$", var.serverless_connector_name)) && length(var.serverless_connector_name) + length(regexall("-", var.serverless_connector_name)) < 21)
+    error_message = "serverless_connector_name must be a valid lowercase connector name under 21 characters, counting hyphens as two characters."
+  }
 }
 
 variable "connector_ip_cidr_range" {
@@ -87,8 +97,8 @@ variable "connector_min_instances" {
   default     = 2
 
   validation {
-    condition     = var.connector_min_instances >= 2
-    error_message = "connector_min_instances must be at least 2."
+    condition     = var.connector_min_instances >= 2 && var.connector_min_instances <= 9
+    error_message = "connector_min_instances must be between 2 and 9."
   }
 }
 
@@ -98,8 +108,8 @@ variable "connector_max_instances" {
   default     = 3
 
   validation {
-    condition     = var.connector_max_instances >= 2
-    error_message = "connector_max_instances must be at least 2."
+    condition     = var.connector_max_instances >= 3 && var.connector_max_instances <= 10
+    error_message = "connector_max_instances must be between 3 and 10."
   }
 }
 
@@ -107,6 +117,11 @@ variable "connector_machine_type" {
   description = "Machine type for the Serverless VPC Access connector."
   type        = string
   default     = "e2-micro"
+
+  validation {
+    condition     = contains(["f1-micro", "e2-micro", "e2-standard-4"], var.connector_machine_type)
+    error_message = "connector_machine_type must be f1-micro, e2-micro, or e2-standard-4."
+  }
 }
 
 variable "labels" {
