@@ -40,7 +40,7 @@ variable "network_name" {
   default     = null
 
   validation {
-    condition     = var.network_name == null || length(var.network_name) > 0
+    condition     = var.network_name == null ? true : length(var.network_name) > 0
     error_message = "network_name must not be empty when provided."
   }
 }
@@ -80,7 +80,7 @@ variable "serverless_connector_name" {
   default     = null
 
   validation {
-    condition     = var.serverless_connector_name == null || (can(regex("^[a-z]([a-z0-9-]*[a-z0-9])?$", var.serverless_connector_name)) && length(var.serverless_connector_name) + length(regexall("-", var.serverless_connector_name)) < 21)
+    condition     = var.serverless_connector_name == null ? true : (can(regex("^[a-z]([a-z0-9-]*[a-z0-9])?$", var.serverless_connector_name)) && length(var.serverless_connector_name) + length(regexall("-", var.serverless_connector_name)) < 21)
     error_message = "serverless_connector_name must be a valid lowercase connector name under 21 characters, counting hyphens as two characters."
   }
 }
