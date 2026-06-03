@@ -1,0 +1,13 @@
+project_id      = "replace-with-prod-project-id"
+region          = "replace-with-region"
+app_name        = "replace-with-app-name"
+instance_name   = "replace-with-instance-name"
+container_image = "replace-with-region-docker.pkg.dev/replace-with-project/replace-with-repo/replace-with-image:replace-with-tag"
+
+labels = {
+  managed_by = "terraform"
+}
+
+extra_env_vars = {
+  ENABLE_SHERIFF_SALES = "false"
+}

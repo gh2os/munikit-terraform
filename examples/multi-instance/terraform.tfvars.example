@@ -1,0 +1,32 @@
+project_id  = "replace-with-project-id"
+region      = "replace-with-region"
+app_name    = "replace-with-app-name"
+environment = "replace-with-environment"
+
+labels = {
+  managed_by = "replace-with-manager-label"
+  product    = "replace-with-product-label"
+}
+
+instances = {
+  replace-with-first-instance = {
+    container_image = "replace-with-region-docker.pkg.dev/replace-with-project/replace-with-repo/replace-with-image:replace-with-tag"
+    extra_env_vars = {
+      ENABLE_SHERIFF_SALES = "false"
+    }
+  }
+
+  replace-with-second-instance = {
+    container_image = "replace-with-region-docker.pkg.dev/replace-with-project/replace-with-repo/replace-with-image:replace-with-tag"
+    extra_env_vars = {
+      ENABLE_SHERIFF_SALES = "true"
+    }
+  }
+
+  replace-with-third-instance = {
+    container_image = "replace-with-region-docker.pkg.dev/replace-with-project/replace-with-repo/replace-with-image:replace-with-tag"
+    extra_env_vars = {
+      ENABLE_SHERIFF_SALES = "false"
+    }
+  }
+}
