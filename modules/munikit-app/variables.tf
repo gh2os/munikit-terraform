@@ -54,7 +54,7 @@ variable "service_name" {
   default     = null
 
   validation {
-    condition     = var.service_name == null || (can(regex("^[a-z]([a-z0-9-]*[a-z0-9])?$", var.service_name)) && length(var.service_name) <= 49)
+    condition     = var.service_name == null ? true : (can(regex("^[a-z]([a-z0-9-]*[a-z0-9])?$", var.service_name)) && length(var.service_name) <= 49)
     error_message = "service_name must be a valid Cloud Run service name with 49 characters or fewer."
   }
 }
@@ -213,7 +213,7 @@ variable "payload_secret" {
   sensitive   = true
 
   validation {
-    condition     = var.payload_secret == null || length(var.payload_secret) >= 32
+    condition     = var.payload_secret == null ? true : length(var.payload_secret) >= 32
     error_message = "payload_secret must be at least 32 characters when provided."
   }
 }
@@ -289,7 +289,7 @@ variable "artifact_registry_repository_id" {
   default     = null
 
   validation {
-    condition     = var.artifact_registry_repository_id == null || (can(regex("^[a-z]([a-z0-9-]*[a-z0-9])?$", var.artifact_registry_repository_id)) && length(var.artifact_registry_repository_id) <= 63)
+    condition     = var.artifact_registry_repository_id == null ? true : (can(regex("^[a-z]([a-z0-9-]*[a-z0-9])?$", var.artifact_registry_repository_id)) && length(var.artifact_registry_repository_id) <= 63)
     error_message = "artifact_registry_repository_id must be a valid lowercase Artifact Registry repository ID."
   }
 }
