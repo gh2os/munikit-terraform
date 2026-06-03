@@ -97,7 +97,7 @@ variable "hmac_service_account_id" {
   default     = null
 
   validation {
-    condition     = var.hmac_service_account_id == null || (can(regex("^[a-z][a-z0-9-]{4,28}[a-z0-9]$", var.hmac_service_account_id)) && length(var.hmac_service_account_id) <= 30)
+    condition     = var.hmac_service_account_id == null ? true : can(regex("^[a-z][a-z0-9-]{4,28}[a-z0-9]$", var.hmac_service_account_id))
     error_message = "hmac_service_account_id must be 6-30 characters, lowercase, start with a letter, and contain only letters, numbers, and hyphens."
   }
 }
